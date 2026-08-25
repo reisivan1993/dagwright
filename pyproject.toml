@@ -31,7 +31,7 @@ dependencies = [
 dagwright = "dagwright.cli:app"
 
 [project.optional-dependencies]
-execution = ["pyspark==3.5.5"]
+execution = ["pyspark==4.2.0"]
 
 [dependency-groups]
 dev = [
