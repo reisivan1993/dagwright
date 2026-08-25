@@ -60,7 +60,7 @@ statically validated Airflow 3 and Spark/Iceberg bundle.
 
 These items remain explicit and are not part of the completed v0.1 release profile:
 
-- [ ] Define and apply deterministic environment overlays with conflict diagnostics.
+- [x] Define and apply deterministic environment overlays with conflict diagnostics.
 - [ ] Add PostgreSQL-backed operational history, approvals, deployments, and audit records without
   making the compiler depend on PostgreSQL.
 - [ ] Extend capability negotiation for each additional adapter as it is introduced.
@@ -107,3 +107,17 @@ paths are tested.
 Exit condition: ambiguous suites fail before execution; controlled runtime mismatches produce strict
 diagnostic evidence; all quality evaluators run on Spark; and an isolated wheel passes its smoke
 workflow. No deployment or agent/control-plane capability is introduced.
+
+### Checkpoint 4 — Deterministic environment overlays
+
+- [x] Define strict `dagwright.io/v1alpha1` `DataProductOverlay` models and JSON Schema.
+- [x] Apply replacement-only JSON-pointer patches without mutating the source contract.
+- [x] Reject duplicate names, overlapping paths, missing targets, invalid indexes, and invalid results.
+- [x] Prove disjoint overlay application is independent of CLI argument order.
+- [x] Add repeatable `--overlay` support to validate, plan, compile, explain, and verify.
+- [x] Publish RFC-0005, an example overlay, unit/Hypothesis tests, and installed schema resources.
+- [x] Run static, package, and reference gates; review, commit, and push.
+
+Exit condition: environment-specific effective contracts compile reproducibly from explicit overlay
+files, conflicts fail with owner/path diagnostics, and unchanged base contracts retain identical
+bytes and digests. No environment discovery, secret resolution, persistence, or deployment is added.

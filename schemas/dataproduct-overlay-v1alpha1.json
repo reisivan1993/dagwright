@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "OverlayPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^/(?:[^/~]|~[01])+(?:/(?:[^/~]|~[01])+)*$",
+          "title": "Path",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/JsonValue"
+        }
+      },
+      "required": [
+        "path",
+        "value"
+      ],
+      "title": "OverlayPatch",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "dagwright.io/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "DataProductOverlay",
+      "title": "Kind",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+      "title": "Name",
+      "type": "string"
+    },
+    "patches": {
+      "items": {
+        "$ref": "#/$defs/OverlayPatch"
+      },
+      "minItems": 1,
+      "title": "Patches",
+      "type": "array"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "name",
+    "patches"
+  ],
+  "title": "DataProductOverlay",
+  "type": "object"
+}

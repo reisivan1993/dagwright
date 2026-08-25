@@ -10,6 +10,7 @@
 - Exercise v0.1: `uv run dagwright plan examples/customer-analytics/dataproduct.yaml`
 - Exercise the real reference pipeline: `make verify-reference` (Java 17; downloads Spark/Iceberg).
 - Exercise a suite: `uv run --extra execution dagwright verify PRODUCT --suite SUITE --output DIR`.
+- Exercise an overlay: `uv run dagwright compile PRODUCT --overlay OVERLAY --target spark`.
 
 ## Architecture rules
 
@@ -22,6 +23,7 @@
 - Keep formatting, Ruff, strict mypy, Pyright, pytest, and dependency audit green.
 - Keep local compilation self-contained; PostgreSQL is never a compiler dependency.
 - Keep verification suites versioned, deterministic, path-confined, and separate from contracts.
+- Keep overlays replacement-only, explicit, order-independent, and validated before compilation.
 - Do not add Rust, LLM/agent, MCP, web UI, microservice, or distributed-runtime code in v0.1.
 - Record durable architecture choices in `docs/adr` and proposals in `docs/rfcs`.
 - Do not implement roadmap work beyond the active milestone.

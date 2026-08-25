@@ -27,14 +27,27 @@ def main() -> int:
         run(str(dagwright), "doctor")
         contract = root / "examples/customer-analytics/dataproduct.yaml"
         suite = root / "examples/customer-analytics/verification.yaml"
+        overlay = root / "examples/customer-analytics/development.overlay.yaml"
         output = Path(directory) / "compiled"
         run(str(dagwright), "validate", str(contract))
         run(str(dagwright), "compile", str(contract), "--target", "spark", "-o", str(output))
+        run(
+            str(dagwright),
+            "compile",
+            str(contract),
+            "--overlay",
+            str(overlay),
+            "--target",
+            "spark",
+            "-o",
+            str(Path(directory) / "overlaid"),
+        )
         code = """
 from pathlib import Path
 from dagwright.resources import schema_path
 from dagwright.verification import parse_verification_suite_file
 assert schema_path('dataproduct-v1alpha1.json').is_file()
+assert schema_path('dataproduct-overlay-v1alpha1.json').is_file()
 assert schema_path('verification-suite-v1alpha1.json').is_file()
 assert parse_verification_suite_file(Path(__import__('sys').argv[1])).kind == 'VerificationSuite'
 """

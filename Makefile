@@ -23,10 +23,12 @@ audit:
 schema:
 	uv run python -m dagwright.contracts.schema
 	uv run python -m dagwright.verification.schema
+	uv run python -m dagwright.overlay_schema
 
 schema-check:
 	uv run python -m dagwright.contracts.schema --check
 	uv run python -m dagwright.verification.schema --check
+	uv run python -m dagwright.overlay_schema --check
 
 adapters-check:
 	uv run python -m dagwright.adapters.airflow --check
@@ -35,6 +37,7 @@ golden:
 	uv run python tools/update_compiler_golden.py
 	uv run python tools/update_airflow_golden.py
 	uv run python tools/update_v01_golden.py
+	uv run python tools/update_overlay_golden.py
 
 verify: lint typecheck test schema-check adapters-check audit
 

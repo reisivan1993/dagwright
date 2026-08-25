@@ -1,0 +1,16 @@
+apiVersion: dagwright.io/v1alpha1
+kind: DataProductOverlay
+name: development
+patches:
+  - path: /metadata/environment
+    value: development
+  - path: /execution/schedule
+    value: null
+  - path: /execution/resources/cpu
+    value: 1.0
+  - path: /execution/resources/memory
+    value: 2Gi
+  - path: /sources/0/connectionRef
+    value: secret://development/crm-db
+  - path: /sources/1/connectionRef
+    value: secret://development/events-db

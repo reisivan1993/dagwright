@@ -21,6 +21,9 @@ uv run dagwright compile examples/customer-analytics/dataproduct.yaml --target a
 uv run dagwright compile examples/customer-analytics/dataproduct.yaml \
   -o build/customer-analytics
 uv run dagwright inspect build/customer-analytics/manifest.json
+uv run dagwright compile examples/customer-analytics/dataproduct.yaml \
+  --overlay examples/customer-analytics/development.overlay.yaml \
+  --target spark -o build/customer-development
 ```
 
 For the database-free container demonstration, run `docker compose run --rm compiler`; it writes
@@ -74,6 +77,9 @@ SQLGlot validates referenced Spark SQL, NetworkX produces the canonical topologi
 Jinja2 renders generated Python. Every generated Python file and manifest digest is checked before
 the bundle is written.
 
+Repeatable `--overlay` options apply explicit, replacement-only environment patches before every
+compiler gate. Conflicting or invalid JSON-pointer patches fail before artifacts are written.
+
 The first generation-only adapter emits an importable Airflow 3 DAG and artifact manifest:
 
 ```python
@@ -87,7 +93,8 @@ and its tasks refuse to run until workload implementations are bound explicitly.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [PLAN.md](PLAN.md), the
 [v0.1 guide](docs/v0.1.md), the
-[v0.2 checkpoint 3 guide](docs/v0.2-checkpoint-3.md), and the
+[v0.2 checkpoint 3 guide](docs/v0.2-checkpoint-3.md), the
+[v0.2 checkpoint 4 guide](docs/v0.2-checkpoint-4.md), and the
 [architecture plan](docs/DAGwright_Architecture_and_Implementation_Plan.md).
 
 ## License

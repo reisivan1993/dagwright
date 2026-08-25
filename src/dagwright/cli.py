@@ -21,6 +21,7 @@ from dagwright.compiler.errors import CompilerError
 from dagwright.contracts import ContractParseError, parse_contract_file
 from dagwright.diagnostics import run_checks
 from dagwright.evidence import read_execution_evidence
+from dagwright.overlays import OverlayError, apply_overlays, parse_overlay_file
 from dagwright.review import (
     CompilationTarget,
     ReviewBundle,
@@ -64,9 +65,13 @@ def doctor() -> None:
 @app.command("validate")
 def validate_command(
     contract: Annotated[Path, typer.Argument(help="DataProduct JSON or YAML file")],
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
 ) -> None:
     """Validate a contract, references, graph, and target capabilities."""
-    compilation, bundle = _prepare(contract)
+    compilation, bundle = _prepare(contract, overlay_paths=overlay or [])
     typer.echo(f"VALID {compilation.contract.metadata.name} ({compilation.contract.version})")
     typer.echo(f"  contract sha256: {compilation.contract_digest}")
     typer.echo(
@@ -87,10 +92,14 @@ def compile_command(
         str,
         typer.Option("--target", help="Artifact target: airflow, spark, or all"),
     ] = "all",
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
 ) -> None:
     """Compile a contract into deterministic, statically validated artifacts."""
     selected = _target(target)
-    compilation, bundle = _prepare(contract, target=selected)
+    compilation, bundle = _prepare(contract, target=selected, overlay_paths=overlay or [])
     try:
         write_review_bundle(bundle, output)
     except ReviewWriteError as error:
@@ -107,9 +116,13 @@ def compile_command(
 @app.command("plan")
 def plan_command(
     contract: Annotated[Path, typer.Argument(help="DataProduct JSON or YAML file")],
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
 ) -> None:
     """Validate and print the deterministic topological execution plan."""
-    compilation, _ = _prepare(contract)
+    compilation, _ = _prepare(contract, overlay_paths=overlay or [])
     plan = build_execution_plan(compilation.ir)
     typer.echo(f"PLAN {compilation.contract.metadata.name} ({len(plan.steps)} steps)")
     for step in plan.steps:
@@ -162,11 +175,15 @@ def verify_command(
         Path,
         typer.Option("--output", "-o", help="New or empty verification output directory"),
     ] = Path("build/verification"),
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
 ) -> None:
     """Compile and verify one generated workload on local Spark/Iceberg."""
     try:
         suite = parse_verification_suite_file(suite_path)
-        compilation, bundle = _prepare(contract, target="spark")
+        compilation, bundle = _prepare(contract, target="spark", overlay_paths=overlay or [])
         validate_verification_suite(suite, compilation.contract, suite_path.parent)
         bundle_path = output / "bundle"
         write_review_bundle(bundle, bundle_path)
@@ -237,9 +254,13 @@ def verify_command(
 @app.command("explain")
 def explain_command(
     contract: Annotated[Path, typer.Argument(help="DataProduct JSON or YAML file")],
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
 ) -> None:
     """Explain the canonical compilation plan without writing files."""
-    compilation, bundle = _prepare(contract)
+    compilation, bundle = _prepare(contract, overlay_paths=overlay or [])
     typer.echo(_explanation(compilation, bundle))
 
 
@@ -247,9 +268,12 @@ def _prepare(
     path: Path,
     *,
     target: CompilationTarget = "all",
+    overlay_paths: list[Path] | None = None,
 ) -> tuple[CompilationResult, ReviewBundle]:
     try:
         contract = parse_contract_file(path)
+        overlays = [parse_overlay_file(item) for item in overlay_paths or []]
+        contract = apply_overlays(contract, overlays)
         sql = load_validated_sql(contract, path.parent)
         compilation = compile_contract(contract)
         adapter = Airflow3Adapter()
@@ -263,7 +287,13 @@ def _prepare(
             target=target,
             sql_by_transformation=sql,
         )
-    except (ContractParseError, CompilerError, UnsupportedSemanticsError, ValueError) as error:
+    except (
+        ContractParseError,
+        CompilerError,
+        OverlayError,
+        UnsupportedSemanticsError,
+        ValueError,
+    ) as error:
         _fail(error)
 
 

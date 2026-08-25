@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added deterministic, replacement-only DataProduct environment overlays with repeatable CLI
+  options, conflict diagnostics, published schema, RFC, example, and property tests.
+
 - Hardened v0.2 verification with semantic suite validation, exact negative-control expectations,
   all five quality-rule evaluators, controlled-failure evidence, and isolated wheel verification.
 - Added contribution templates and transparent release/Apache-style readiness checklists.
