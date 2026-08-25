@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.2.0rc1 — 2026-08-25
+
+- Added a reproducible local release-candidate build that byte-compares two clean builds and emits
+  SHA-512 checksums, a CycloneDX 1.6 runtime SBOM, and a dependency-license inventory.
+- Added initial code ownership and documented the approval, signing, and publication boundaries.
+
 - Added deterministic, replacement-only DataProduct environment overlays with repeatable CLI
   options, conflict diagnostics, published schema, RFC, example, and property tests.
 

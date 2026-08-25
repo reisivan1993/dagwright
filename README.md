@@ -1,7 +1,7 @@
 # DAGwright
 
 DAGwright is an open-source, engine-neutral agentic compiler and control plane for data
-engineering. v0.1 is a Python 3.12 compiler that turns a strict `dagwright.io/v1alpha1`
+engineering. v0.2 is a Python 3.12 compiler that turns a strict `dagwright.io/v1alpha1`
 DataProduct contract into canonical IR and deterministic Airflow 3 plus Spark/Iceberg artifacts.
 Local compilation requires no database and does not execute or deploy data products.
 
@@ -37,6 +37,7 @@ With Java 17 available, run the first v0.2 execution checkpoint:
 make verify-reference
 make verify-reference-failure
 make verify-wheel
+make release-candidate
 ```
 
 Or run the public suite workflow directly:
@@ -54,6 +55,10 @@ checks rows, schema, quality rules and negative controls, proves replace-output 
 writes deterministic evidence to `build/reference-execution/evidence.json`. PostgreSQL is not used.
 The failure target proves that an intentional row mismatch exits nonzero while retaining strict
 diagnostic evidence.
+
+`make release-candidate` builds the wheel and source archive twice, rejects byte differences,
+smoke-tests the wheel, and writes SHA-512 checksums, a CycloneDX runtime SBOM, and a dependency
+license inventory under `build/release/`. It does not tag, sign, upload, or publish anything.
 
 The generated contract schema is [schemas/dataproduct-v1alpha1.json](schemas/dataproduct-v1alpha1.json),
 and the validated customer example is
@@ -94,7 +99,8 @@ and its tasks refuse to run until workload implementations are bound explicitly.
 See [CONTRIBUTING.md](CONTRIBUTING.md), [PLAN.md](PLAN.md), the
 [v0.1 guide](docs/v0.1.md), the
 [v0.2 checkpoint 3 guide](docs/v0.2-checkpoint-3.md), the
-[v0.2 checkpoint 4 guide](docs/v0.2-checkpoint-4.md), and the
+[v0.2 checkpoint 4 guide](docs/v0.2-checkpoint-4.md), the
+[v0.2 release-candidate guide](docs/v0.2-release-candidate.md), and the
 [architecture plan](docs/DAGwright_Architecture_and_Implementation_Plan.md).
 
 ## License

@@ -1,4 +1,4 @@
-.PHONY: install format lint typecheck test audit schema schema-check adapters-check golden verify verify-reference verify-reference-failure verify-wheel
+.PHONY: install format lint typecheck test audit schema schema-check adapters-check golden verify verify-reference verify-reference-failure verify-wheel release-candidate
 
 install:
 	uv sync --locked --all-groups
@@ -85,4 +85,7 @@ verify-reference-failure: golden
 
 verify-wheel:
 	uv build
-	uv run python tools/verify_wheel.py dist/dagwright-0.1.0-py3-none-any.whl
+	uv run python tools/verify_wheel.py dist
+
+release-candidate: verify
+	uv run python tools/build_release_candidate.py

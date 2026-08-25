@@ -7,6 +7,7 @@ from typing import Any, cast
 import pytest
 from typer.testing import CliRunner
 
+from dagwright import __version__
 from dagwright.cli import app
 
 ROOT = Path(__file__).parents[1]
@@ -65,7 +66,7 @@ def test_compilation_manifest_digests_every_emitted_artifact(tmp_path: Path) -> 
     assert result.exit_code == 0
     manifest = cast(dict[str, Any], json.loads((output / "manifest.json").read_text()))
     assert manifest["apiVersion"] == "dagwright.io/compilation-manifest/v1alpha1"
-    assert manifest["compilerVersion"] == "0.1.0"
+    assert manifest["compilerVersion"] == __version__
     assert manifest["generationOnly"] is True
     assert len(manifest["files"]) == 9
     for metadata in manifest["files"]:

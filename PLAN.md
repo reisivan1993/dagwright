@@ -121,3 +121,17 @@ workflow. No deployment or agent/control-plane capability is introduced.
 Exit condition: environment-specific effective contracts compile reproducibly from explicit overlay
 files, conflicts fail with owner/path diagnostics, and unchanged base contracts retain identical
 bytes and digests. No environment discovery, secret resolution, persistence, or deployment is added.
+
+### Checkpoint 5 — Local v0.2 release candidate
+
+- [x] Mark the candidate as `0.2.0rc1` while keeping adapter protocol versions stable.
+- [x] Add initial code ownership and explicit human approval boundaries for publication.
+- [x] Build wheel and source distributions twice with a fixed source-date epoch.
+- [x] Reject byte differences and smoke-test the candidate wheel in isolation.
+- [x] Emit SHA-512 checksums, a CycloneDX runtime SBOM, and dependency-license inventory.
+- [x] Document candidate review, signing, and publication gaps without publishing artifacts.
+- [ ] Obtain two maintainer reviews, sign the approved artifacts, and publish only with explicit
+  release-manager authorization.
+
+Exit condition: a local `0.2.0rc1` candidate is reproducible, installable, checksummed, and supplied
+with machine-readable dependency inventory. No tag, release, upload, or visibility change occurs.

@@ -8,9 +8,13 @@ Apache Software Foundation project.
 - [ ] `uv lock --check`, `make verify`, `make verify-wheel`, and applicable real-engine checks pass.
 - [ ] The source archive and wheel install cleanly and contain `LICENSE`, `NOTICE`, and schemas.
 - [ ] Dependency licenses and the vulnerability audit are reviewed.
+- [ ] `make release-candidate` passes; its two builds are byte-identical and its CycloneDX SBOM,
+  dependency-license inventory, and SHA-512 checksums are reviewed.
 - [ ] Every commit has provenance and required DCO sign-off; third-party notices are complete.
 - [ ] A release candidate tag is immutable and its commit, artifacts, and SHA-512 digests are named.
 - [ ] At least two maintainers review the candidate; objections and resolutions are public.
 - [ ] Artifacts are signed when project signing infrastructure is available.
+- [ ] A human release manager explicitly authorizes every tag, GitHub release, and package-index
+  upload; the local candidate command performs none of those actions.
 - [ ] The release notes clearly state experimental features and unsupported production use.
 - [ ] After approval, publish artifacts, create the final tag, and verify all download links.

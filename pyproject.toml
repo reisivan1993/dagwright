@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dagwright"
-version = "0.1.0"
+version = "0.2.0rc1"
 description = "Open-source, engine-neutral agentic compiler and control plane for data engineering"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "DAGwright contributors" }]
 classifiers = [
-  "Development Status :: 1 - Planning",
+  "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
@@ -39,6 +39,7 @@ dev = [
   "hypothesis>=6.120,<7",
   "jsonschema>=4.23,<5",
   "mypy>=1.14,<2",
+  "packaging>=24,<27",
   "pip-audit>=2.8,<3",
   "pyright>=1.1.400,<2",
   "pytest>=9.0.3,<10",

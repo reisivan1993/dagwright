@@ -4,6 +4,7 @@ import argparse
 import os
 import subprocess
 import tempfile
+import tomllib
 from pathlib import Path
 
 
@@ -13,9 +14,16 @@ def run(*command: str, cwd: Path | None = None) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("wheel", type=Path)
+    parser.add_argument("wheel", type=Path, help="Wheel file or directory containing one wheel")
     args = parser.parse_args()
     wheel = args.wheel.resolve()
+    if wheel.is_dir():
+        metadata = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())
+        version = metadata["project"]["version"]
+        wheels = sorted(wheel.glob(f"dagwright-{version}-*.whl"))
+        if len(wheels) != 1:
+            parser.error(f"expected exactly one DAGwright wheel in {wheel}, found {len(wheels)}")
+        wheel = wheels[0]
     root = Path(__file__).parents[1]
     with tempfile.TemporaryDirectory(prefix="dagwright-wheel-") as directory:
         environment = Path(directory) / "venv"

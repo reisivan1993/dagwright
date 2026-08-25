@@ -726,7 +726,7 @@ wheels = [
 
 [[package]]
 name = "dagwright"
-version = "0.1.0"
+version = "0.2.0rc1"
 source = { editable = "." }
 dependencies = [
     { name = "croniter" },
@@ -749,6 +749,7 @@ dev = [
     { name = "hypothesis" },
     { name = "jsonschema" },
     { name = "mypy" },
+    { name = "packaging" },
     { name = "pip-audit" },
     { name = "pyright" },
     { name = "pytest" },
@@ -778,6 +779,7 @@ dev = [
     { name = "hypothesis", specifier = ">=6.120,<7" },
     { name = "jsonschema", specifier = ">=4.23,<5" },
     { name = "mypy", specifier = ">=1.14,<2" },
+    { name = "packaging", specifier = ">=24,<27" },
     { name = "pip-audit", specifier = ">=2.8,<3" },
     { name = "pyright", specifier = ">=1.1.400,<2" },
     { name = "pytest", specifier = ">=9.0.3,<10" },
