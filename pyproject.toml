@@ -23,7 +23,7 @@ dependencies = [
   "networkx>=3.4,<4",
   "pydantic>=2.10,<3",
   "pyyaml>=6.0.2,<7",
-  "sqlglot>=27,<29",
+  "sqlglot>=27,<31",
   "typer>=0.15,<1",
 ]
 
