@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dagwright"
+version = "0.1.0"
+description = "Open-source, engine-neutral agentic compiler and control plane for data engineering"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{ name = "DAGwright contributors" }]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+dependencies = [
+  "croniter>=6,<7",
+  "jinja2>=3.1,<4",
+  "networkx>=3.4,<4",
+  "pydantic>=2.10,<3",
+  "pyyaml>=6.0.2,<7",
+  "sqlglot>=27,<29",
+  "typer>=0.15,<1",
+]
+
+[project.scripts]
+dagwright = "dagwright.cli:app"
+
+[project.optional-dependencies]
+execution = ["pyspark==3.5.5"]
+
+[dependency-groups]
+dev = [
+  "apache-airflow-task-sdk==1.3.1",
+  "hypothesis>=6.120,<7",
+  "jsonschema>=4.23,<5",
+  "mypy>=1.14,<2",
+  "pip-audit>=2.8,<3",
+  "pyright>=1.1.400,<2",
+  "pytest>=9.0.3,<10",
+  "ruff>=0.9,<1",
+  "types-jsonschema>=4.23,<5",
+  "types-networkx>=3.4,<4",
+  "types-croniter>=6,<7",
+  "types-pyyaml>=6.0.12,<7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dagwright"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"tools/run_reference_pipeline.py" = "dagwright/verification/spark_runner.py"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["spark_integration: runs the real local Spark/Iceberg reference workflow"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+exclude = ["tests/golden"]
+
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"

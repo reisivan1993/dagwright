@@ -1,0 +1,101 @@
+apiVersion: dagwright.io/v1alpha1
+kind: DataProduct
+version: 1.0.0
+metadata:
+  name: customer-analytics
+  owner: analytics-engineering
+  environment: production
+  description: Daily governed customer engagement analytics.
+  labels:
+    domain: customer
+    tier: gold
+sources:
+  - name: crm-db
+    type: postgres
+    connectionRef: secret://production/crm-db
+    object: public.customers
+    capture:
+      mode: batch
+      deleteSemantics: soft_delete
+      cursorField: updated_at
+  - name: events-db
+    type: postgres
+    connectionRef: secret://production/events-db
+    object: public.customer_events
+    capture:
+      mode: batch
+      deleteSemantics: ignore
+      cursorField: occurred_at
+assets:
+  - name: raw_customers
+    type: iceberg_table
+    mode: snapshot
+    source: crm-db.public.customers
+    retention: P90D
+  - name: raw_customer_events
+    type: iceberg_table
+    mode: append
+    source: events-db.public.customer_events
+    retention: P90D
+  - name: customer_engagement
+    type: iceberg_table
+    mode: current_state
+    inputs: [raw_customers, raw_customer_events]
+    primaryKey: [customer_id]
+    transformationIds: [build-customer-engagement]
+    retention: P365D
+transformations:
+  - id: build-customer-engagement
+    type: sql
+    inputs: [raw_customers, raw_customer_events]
+    output: customer_engagement
+    sqlRef: sql/customer_engagement.sql
+contracts:
+  freshness:
+    target: PT24H
+    criticalAfter: P2D
+  quality:
+    - id: customer-id-not-null
+      type: not_null
+      asset: customer_engagement
+      fields: [customer_id]
+      severity: error
+    - id: customer-id-unique
+      type: unique
+      asset: customer_engagement
+      fields: [customer_id]
+      severity: error
+  anomalies:
+    - id: daily-customer-volume
+      asset: customer_engagement
+      metric: row_count
+      method: relative_change
+      threshold: 0.2
+      window: P7D
+      severity: warning
+  volume:
+    expectedRowsPerHour:
+      min: 100
+      max: 10000000
+  delivery:
+    duplicates: possible
+    ordering: none
+execution:
+  transformEngine: spark
+  orchestrator: airflow
+  targetCatalog: iceberg-rest
+  schedule: "0 3 * * *"
+  resources:
+    cpu: 4.0
+    memory: 8Gi
+  retry:
+    maxAttempts: 3
+  idempotency:
+    mode: replace_output
+governance:
+  dataClassification: confidential
+  productionRepairPolicy: approval_required
+  piiFields:
+    - raw_customers.email
+    - customer_engagement.email
+  retention: P365D

@@ -1,0 +1,10 @@
+services:
+  compiler:
+    build: .
+    command:
+      - compile
+      - examples/customer-analytics/dataproduct.yaml
+      - --output
+      - /output
+    volumes:
+      - ./build/compose:/output

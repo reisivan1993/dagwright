@@ -1,0 +1,140 @@
+{
+  "$defs": {
+    "ExpectedOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "orderBy": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Orderby",
+          "type": "array"
+        },
+        "rows": {
+          "minLength": 1,
+          "title": "Rows",
+          "type": "string"
+        },
+        "schema": {
+          "minLength": 1,
+          "title": "Schema",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rows",
+        "schema",
+        "orderBy"
+      ],
+      "title": "ExpectedOutput",
+      "type": "object"
+    },
+    "Fixture": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "view": {
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view",
+        "path"
+      ],
+      "title": "Fixture",
+      "type": "object"
+    },
+    "NegativeControl": {
+      "additionalProperties": false,
+      "properties": {
+        "fixtures": {
+          "items": {
+            "$ref": "#/$defs/Fixture"
+          },
+          "minItems": 1,
+          "title": "Fixtures",
+          "type": "array"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "fixtures"
+      ],
+      "title": "NegativeControl",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "dagwright.io/verification-suite/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "attempts": {
+      "default": 2,
+      "maximum": 10,
+      "minimum": 2,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "expected": {
+      "$ref": "#/$defs/ExpectedOutput"
+    },
+    "fixtures": {
+      "items": {
+        "$ref": "#/$defs/Fixture"
+      },
+      "minItems": 1,
+      "title": "Fixtures",
+      "type": "array"
+    },
+    "kind": {
+      "const": "VerificationSuite",
+      "title": "Kind",
+      "type": "string"
+    },
+    "name": {
+      "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+      "title": "Name",
+      "type": "string"
+    },
+    "negativeControls": {
+      "items": {
+        "$ref": "#/$defs/NegativeControl"
+      },
+      "minItems": 1,
+      "title": "Negativecontrols",
+      "type": "array"
+    },
+    "transformation": {
+      "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+      "title": "Transformation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "name",
+    "transformation",
+    "fixtures",
+    "expected",
+    "negativeControls"
+  ],
+  "title": "VerificationSuite",
+  "type": "object"
+}

@@ -1,0 +1,3 @@
+{"customer_id":"c001","event_id":"e001","occurred_at":"2026-01-01T10:00:00Z"}
+{"customer_id":"c001","event_id":"e002","occurred_at":"2026-01-02T12:00:00Z"}
+{"customer_id":"c002","event_id":"e003","occurred_at":"2026-01-03T09:30:00Z"}

@@ -1,0 +1,3 @@
+{"customer_id":"c001","email":"ada@example.test"}
+{"customer_id":"c001","email":"duplicate@example.test"}
+{"customer_id":null,"email":"missing-id@example.test"}

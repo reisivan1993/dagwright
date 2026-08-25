@@ -1,0 +1,32 @@
+{
+  "adapterVersion": "0.1.0",
+  "apiVersion": "dagwright.io/adapter-capabilities/v1alpha1",
+  "batch": true,
+  "cdc": "delegated_to_source",
+  "checkpointing": false,
+  "contractVersions": [
+    "dagwright.io/v1alpha1"
+  ],
+  "costVisibility": false,
+  "dryRun": true,
+  "exactlyOnceScope": "none",
+  "generationOnly": true,
+  "irVersions": [
+    "dagwright.ir/v1alpha1"
+  ],
+  "lineage": true,
+  "name": "airflow3",
+  "operationalContracts": "quality_fail_closed_others_delegated",
+  "qualityGates": "structural_fail_closed",
+  "rollback": false,
+  "schedules": [
+    "manual",
+    "cron",
+    "preset"
+  ],
+  "schemaEvolution": false,
+  "streaming": false,
+  "target": "apache-airflow",
+  "targetVersion": ">=3.0,<4",
+  "watermarks": "delegated_to_workload"
+}

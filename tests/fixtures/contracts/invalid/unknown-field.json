@@ -1,0 +1,16 @@
+{
+  "apiVersion": "dagwright.io/v1alpha1",
+  "kind": "DataProduct",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "customer",
+    "owner": "data",
+    "environment": "test",
+    "unexpected": true
+  },
+  "sources": [],
+  "assets": [],
+  "contracts": {"delivery": {"duplicates": "possible", "ordering": "none"}},
+  "execution": {"transformEngine": "spark", "orchestrator": "airflow", "targetCatalog": "iceberg"},
+  "governance": {"dataClassification": "internal", "productionRepairPolicy": "disabled"}
+}

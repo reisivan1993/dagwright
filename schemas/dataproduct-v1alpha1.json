@@ -1,0 +1,1029 @@
+{
+  "$defs": {
+    "AnomalyRule": {
+      "additionalProperties": false,
+      "description": "A declared statistical anomaly signal; evaluation is outside this checkpoint.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "asset": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Asset",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "static_threshold",
+            "relative_change",
+            "standard_deviation"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "metric": {
+          "enum": [
+            "row_count",
+            "freshness",
+            "null_rate",
+            "latency",
+            "cost"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "severity": {
+          "default": "warning",
+          "enum": [
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "threshold": {
+          "exclusiveMinimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "window": {
+          "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "asset",
+        "metric",
+        "method",
+        "threshold",
+        "window"
+      ],
+      "title": "AnomalyRule",
+      "type": "object"
+    },
+    "Asset": {
+      "additionalProperties": false,
+      "description": "A materialized or logical data asset.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "inputs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "append",
+            "append_changes",
+            "current_state",
+            "snapshot"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "primaryKey": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Primarykey",
+          "type": "array"
+        },
+        "retention": {
+          "anyOf": [
+            {
+              "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retention"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        },
+        "transformationIds": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Transformationids",
+          "type": "array"
+        },
+        "type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "mode"
+      ],
+      "title": "Asset",
+      "type": "object"
+    },
+    "Capture": {
+      "additionalProperties": false,
+      "description": "How a source is read and how source deletes are represented.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "cursorField": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursorfield"
+        },
+        "deleteSemantics": {
+          "default": "ignore",
+          "enum": [
+            "ignore",
+            "hard_delete",
+            "soft_delete",
+            "tombstone"
+          ],
+          "title": "Deletesemantics",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "batch",
+            "cdc",
+            "stream"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "Capture",
+      "type": "object"
+    },
+    "ContractExpectations": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "anomalies": {
+          "items": {
+            "$ref": "#/$defs/AnomalyRule"
+          },
+          "title": "Anomalies",
+          "type": "array"
+        },
+        "delivery": {
+          "$ref": "#/$defs/DeliveryContract"
+        },
+        "freshness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FreshnessContract"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "quality": {
+          "items": {
+            "$ref": "#/$defs/QualityRule"
+          },
+          "title": "Quality",
+          "type": "array"
+        },
+        "volume": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumeContract"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "delivery"
+      ],
+      "title": "ContractExpectations",
+      "type": "object"
+    },
+    "DeliveryContract": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "duplicates": {
+          "enum": [
+            "forbidden",
+            "possible"
+          ],
+          "title": "Duplicates",
+          "type": "string"
+        },
+        "lateData": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LateData"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ordering": {
+          "enum": [
+            "none",
+            "per_partition",
+            "total"
+          ],
+          "title": "Ordering",
+          "type": "string"
+        }
+      },
+      "required": [
+        "duplicates",
+        "ordering"
+      ],
+      "title": "DeliveryContract",
+      "type": "object"
+    },
+    "Execution": {
+      "additionalProperties": false,
+      "description": "Requested engine roles, not generated deployment configuration.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "idempotency": {
+          "$ref": "#/$defs/IdempotencyPolicy"
+        },
+        "orchestrator": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Orchestrator",
+          "type": "string"
+        },
+        "resources": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResourceHints"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "retry": {
+          "$ref": "#/$defs/RetryPolicy"
+        },
+        "schedule": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schedule"
+        },
+        "targetCatalog": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Targetcatalog",
+          "type": "string"
+        },
+        "transformEngine": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Transformengine",
+          "type": "string"
+        }
+      },
+      "required": [
+        "transformEngine",
+        "orchestrator",
+        "targetCatalog"
+      ],
+      "title": "Execution",
+      "type": "object"
+    },
+    "FreshnessContract": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "criticalAfter": {
+          "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+          "title": "Criticalafter",
+          "type": "string"
+        },
+        "target": {
+          "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "criticalAfter"
+      ],
+      "title": "FreshnessContract",
+      "type": "object"
+    },
+    "Governance": {
+      "additionalProperties": false,
+      "description": "Classification and production-change controls.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "dataClassification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "title": "Dataclassification",
+          "type": "string"
+        },
+        "piiFields": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Piifields",
+          "type": "array"
+        },
+        "productionRepairPolicy": {
+          "enum": [
+            "disabled",
+            "approval_required",
+            "bounded_autonomous"
+          ],
+          "title": "Productionrepairpolicy",
+          "type": "string"
+        },
+        "retention": {
+          "anyOf": [
+            {
+              "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retention"
+        }
+      },
+      "required": [
+        "dataClassification",
+        "productionRepairPolicy"
+      ],
+      "title": "Governance",
+      "type": "object"
+    },
+    "IdempotencyPolicy": {
+      "additionalProperties": false,
+      "description": "Declared write behavior used by workload generators and reviewers.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "keyFields": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Keyfields",
+          "type": "array"
+        },
+        "mode": {
+          "default": "replace_output",
+          "enum": [
+            "replace_output",
+            "merge_by_key",
+            "append_once"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "title": "IdempotencyPolicy",
+      "type": "object"
+    },
+    "LateData": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "action": {
+          "enum": [
+            "drop",
+            "quarantine",
+            "recompute_window"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "watermark": {
+          "pattern": "^P(?:[0-9]+D(?:T(?:[0-9]+H)?(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?)?|T(?:[0-9]+H(?:[0-9]+M)?(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+M(?:[0-9]+(?:\\.[0-9]+)?S)?|[0-9]+(?:\\.[0-9]+)?S))$",
+          "title": "Watermark",
+          "type": "string"
+        }
+      },
+      "required": [
+        "watermark",
+        "action"
+      ],
+      "title": "LateData",
+      "type": "object"
+    },
+    "Metadata": {
+      "additionalProperties": false,
+      "description": "Ownership and identity metadata.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "environment": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Environment",
+          "type": "string"
+        },
+        "labels": {
+          "patternProperties": {
+            "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "owner": {
+          "minLength": 1,
+          "title": "Owner",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "owner",
+        "environment"
+      ],
+      "title": "Metadata",
+      "type": "object"
+    },
+    "QualityRule": {
+      "additionalProperties": false,
+      "description": "A deterministic data-quality expectation.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "asset": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Asset",
+          "type": "string"
+        },
+        "expression": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expression"
+        },
+        "fields": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "severity": {
+          "default": "error",
+          "enum": [
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "not_null",
+            "unique",
+            "referential_integrity",
+            "accepted_values",
+            "expression"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "values": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Values"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "asset",
+        "fields"
+      ],
+      "title": "QualityRule",
+      "type": "object"
+    },
+    "ResourceHints": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "cpu": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cpu"
+        },
+        "memory": {
+          "anyOf": [
+            {
+              "pattern": "^[1-9][0-9]*(?:Mi|Gi)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Memory"
+        }
+      },
+      "title": "ResourceHints",
+      "type": "object"
+    },
+    "RetryPolicy": {
+      "additionalProperties": false,
+      "description": "Portable task-attempt definition; adapters map attempts to engine retries.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "maxAttempts": {
+          "default": 1,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Maxattempts",
+          "type": "integer"
+        }
+      },
+      "title": "RetryPolicy",
+      "type": "object"
+    },
+    "RowRange": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "max": {
+          "minimum": 0,
+          "title": "Max",
+          "type": "integer"
+        },
+        "min": {
+          "minimum": 0,
+          "title": "Min",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "title": "RowRange",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "A named external data source.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "capture": {
+          "$ref": "#/$defs/Capture"
+        },
+        "connectionRef": {
+          "pattern": "^secret://[^\\s]+$",
+          "title": "Connectionref",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "object": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Object"
+        },
+        "type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "connectionRef",
+        "capture"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "Transformation": {
+      "additionalProperties": false,
+      "description": "A reviewable transformation implementation reference.",
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Inputs",
+          "type": "array"
+        },
+        "output": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+          "title": "Output",
+          "type": "string"
+        },
+        "pythonRef": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pythonref"
+        },
+        "sqlRef": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sqlref"
+        },
+        "type": {
+          "enum": [
+            "sql",
+            "python"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "inputs",
+        "output"
+      ],
+      "title": "Transformation",
+      "type": "object"
+    },
+    "VolumeContract": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+          "description": "Namespaced extension value."
+        }
+      },
+      "properties": {
+        "expectedRowsPerHour": {
+          "$ref": "#/$defs/RowRange"
+        }
+      },
+      "required": [
+        "expectedRowsPerHour"
+      ],
+      "title": "VolumeContract",
+      "type": "object"
+    }
+  },
+  "$id": "https://dagwright.io/schemas/dataproduct-v1alpha1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The root ``dagwright.io/v1alpha1`` contract.",
+  "patternProperties": {
+    "^x-[a-z][a-z0-9]*(?:[./-][a-z][a-z0-9]*)*$": {
+      "description": "Namespaced extension value."
+    }
+  },
+  "properties": {
+    "apiVersion": {
+      "const": "dagwright.io/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "assets": {
+      "items": {
+        "$ref": "#/$defs/Asset"
+      },
+      "minItems": 1,
+      "title": "Assets",
+      "type": "array"
+    },
+    "contracts": {
+      "$ref": "#/$defs/ContractExpectations"
+    },
+    "execution": {
+      "$ref": "#/$defs/Execution"
+    },
+    "governance": {
+      "$ref": "#/$defs/Governance"
+    },
+    "kind": {
+      "const": "DataProduct",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "transformations": {
+      "items": {
+        "$ref": "#/$defs/Transformation"
+      },
+      "title": "Transformations",
+      "type": "array"
+    },
+    "version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "version",
+    "metadata",
+    "sources",
+    "assets",
+    "contracts",
+    "execution",
+    "governance"
+  ],
+  "title": "DAGwright DataProduct v1alpha1",
+  "type": "object"
+}

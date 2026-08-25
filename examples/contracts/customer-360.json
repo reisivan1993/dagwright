@@ -1,0 +1,126 @@
+{
+  "apiVersion": "dagwright.io/v1alpha1",
+  "kind": "DataProduct",
+  "version": "0.1.0-alpha.1",
+  "metadata": {
+    "name": "customer-360",
+    "owner": "customer-data",
+    "environment": "production",
+    "description": "Governed customer profile assembled from operational sources.",
+    "labels": {
+      "domain": "commerce"
+    },
+    "x-acme.catalog": {
+      "tier": "gold"
+    }
+  },
+  "sources": [
+    {
+      "name": "customers-db",
+      "type": "postgres",
+      "connectionRef": "secret://production/customers-db",
+      "object": "public.customers",
+      "capture": {
+        "mode": "cdc",
+        "deleteSemantics": "tombstone"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "name": "bronze_customers",
+      "type": "iceberg_table",
+      "mode": "append_changes",
+      "source": "customers-db.public.customers",
+      "retention": "P90D"
+    },
+    {
+      "name": "silver_customers",
+      "type": "iceberg_table",
+      "mode": "current_state",
+      "inputs": [
+        "bronze_customers"
+      ],
+      "primaryKey": [
+        "customer_id"
+      ],
+      "transformationIds": [
+        "build-customer-profile"
+      ]
+    }
+  ],
+  "transformations": [
+    {
+      "id": "build-customer-profile",
+      "type": "sql",
+      "inputs": [
+        "bronze_customers"
+      ],
+      "output": "silver_customers",
+      "sqlRef": "sql/silver_customers.sql"
+    }
+  ],
+  "contracts": {
+    "freshness": {
+      "target": "PT5M",
+      "criticalAfter": "PT10M"
+    },
+    "quality": [
+      {
+        "id": "customer-id-required",
+        "type": "not_null",
+        "asset": "silver_customers",
+        "fields": [
+          "customer_id"
+        ],
+        "severity": "error"
+      }
+    ],
+    "anomalies": [
+      {
+        "id": "customer-volume-change",
+        "asset": "silver_customers",
+        "metric": "row_count",
+        "method": "relative_change",
+        "threshold": 0.25,
+        "window": "PT1H",
+        "severity": "warning"
+      }
+    ],
+    "volume": {
+      "expectedRowsPerHour": {
+        "min": 100,
+        "max": 5000000
+      }
+    },
+    "delivery": {
+      "duplicates": "possible",
+      "ordering": "per_partition",
+      "lateData": {
+        "watermark": "PT30M",
+        "action": "recompute_window"
+      }
+    }
+  },
+  "execution": {
+    "transformEngine": "spark",
+    "orchestrator": "airflow",
+    "targetCatalog": "iceberg-rest",
+    "schedule": "*/5 * * * *",
+    "resources": {
+      "cpu": 2.0,
+      "memory": "4Gi"
+    }
+  },
+  "governance": {
+    "dataClassification": "confidential",
+    "productionRepairPolicy": "approval_required",
+    "piiFields": [
+      "silver_customers.email"
+    ],
+    "retention": "P365D"
+  },
+  "x-acme.io/lineage": {
+    "externalId": "customer-360"
+  }
+}

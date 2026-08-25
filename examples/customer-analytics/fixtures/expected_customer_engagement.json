@@ -1,0 +1,20 @@
+[
+  {
+    "customer_id": "c001",
+    "email": "ada@example.test",
+    "event_count": 2,
+    "last_event_at": "2026-01-02T12:00:00Z"
+  },
+  {
+    "customer_id": "c002",
+    "email": "grace@example.test",
+    "event_count": 1,
+    "last_event_at": "2026-01-03T09:30:00Z"
+  },
+  {
+    "customer_id": "c003",
+    "email": "linus@example.test",
+    "event_count": 0,
+    "last_event_at": null
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "apiVersion": "dagwright.io/iceberg-tables/v1alpha1",
+  "catalog": "iceberg-rest",
+  "tables": [
+    {
+      "mode": "current_state",
+      "name": "customer_engagement",
+      "primaryKey": [
+        "customer_id"
+      ]
+    },
+    {
+      "mode": "append",
+      "name": "raw_customer_events",
+      "primaryKey": []
+    },
+    {
+      "mode": "snapshot",
+      "name": "raw_customers",
+      "primaryKey": []
+    }
+  ]
+}

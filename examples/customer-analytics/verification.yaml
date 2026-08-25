@@ -1,0 +1,19 @@
+apiVersion: dagwright.io/verification-suite/v1alpha1
+kind: VerificationSuite
+name: customer-analytics-reference
+transformation: build-customer-engagement
+fixtures:
+  - view: raw_customers
+    path: fixtures/customers.json
+  - view: raw_customer_events
+    path: fixtures/customer_events.json
+expected:
+  rows: fixtures/expected_customer_engagement.json
+  schema: fixtures/expected_schema.json
+  orderBy: [customer_id]
+negativeControls:
+  - name: invalid-customers
+    fixtures:
+      - view: raw_customers
+        path: fixtures/invalid_customers.json
+attempts: 2

@@ -1,0 +1,11 @@
+{
+  "apiVersion": "dagwright.io/v1alpha1",
+  "kind": "DataProduct",
+  "version": "v1",
+  "metadata": {"name": "customer", "owner": "data", "environment": "test"},
+  "sources": [{"name": "source", "type": "postgres", "connectionRef": "secret://test/db", "capture": {"mode": "cdc"}}],
+  "assets": [{"name": "customers", "type": "table", "mode": "append", "source": "source.customers"}],
+  "contracts": {"delivery": {"duplicates": "possible", "ordering": "none"}},
+  "execution": {"transformEngine": "spark", "orchestrator": "airflow", "targetCatalog": "iceberg"},
+  "governance": {"dataClassification": "internal", "productionRepairPolicy": "disabled"}
+}

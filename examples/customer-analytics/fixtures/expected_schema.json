@@ -1,0 +1,6 @@
+[
+  {"name": "customer_id", "nullable": true, "type": "string"},
+  {"name": "email", "nullable": true, "type": "string"},
+  {"name": "event_count", "nullable": true, "type": "bigint"},
+  {"name": "last_event_at", "nullable": true, "type": "string"}
+]
