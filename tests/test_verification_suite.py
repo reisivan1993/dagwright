@@ -40,6 +40,7 @@ expected:
   orderBy: [customer_id]
 negativeControls:
   - name: invalid
+    expectedFailures: [customer-id-not-null]
     fixtures:
       - view: raw_customers
         path: missing.json
@@ -63,3 +64,45 @@ def test_verify_reports_missing_execution_extra(
 
     assert result.exit_code == 1
     assert "spark-submit is unavailable" in result.stderr
+
+
+def test_semantics_reject_unused_fixture(tmp_path: Path) -> None:
+    from dagwright.contracts import parse_contract_file
+    from dagwright.verification import validate_verification_suite
+
+    suite = parse_verification_suite_file(SUITE)
+    extra = suite.model_copy(
+        update={
+            "fixtures": [
+                *suite.fixtures,
+                suite.fixtures[0].model_copy(update={"view": "unused_view"}),
+            ]
+        }
+    )
+
+    with pytest.raises(ValueError, match="unused fixture views: unused_view"):
+        validate_verification_suite(extra, parse_contract_file(CONTRACT), SUITE.parent)
+
+
+def test_semantics_reject_unknown_negative_rule() -> None:
+    from dagwright.contracts import parse_contract_file
+    from dagwright.verification import validate_verification_suite
+
+    suite = parse_verification_suite_file(SUITE)
+    control = suite.negative_controls[0].model_copy(update={"expected_failures": ["unknown-rule"]})
+    changed = suite.model_copy(update={"negative_controls": [control]})
+
+    with pytest.raises(ValueError, match="unknown output quality rules: unknown-rule"):
+        validate_verification_suite(changed, parse_contract_file(CONTRACT), SUITE.parent)
+
+
+def test_semantics_reject_negative_control_that_reuses_baseline_data() -> None:
+    from dagwright.contracts import parse_contract_file
+    from dagwright.verification import validate_verification_suite
+
+    suite = parse_verification_suite_file(SUITE)
+    control = suite.negative_controls[0].model_copy(update={"fixtures": [suite.fixtures[0]]})
+    changed = suite.model_copy(update={"negative_controls": [control]})
+
+    with pytest.raises(ValueError, match="does not replace fixture data for: raw_customers"):
+        validate_verification_suite(changed, parse_contract_file(CONTRACT), SUITE.parent)

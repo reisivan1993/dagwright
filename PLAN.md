@@ -93,3 +93,17 @@ bytes. No database or control-plane service is required.
 Exit condition: one CLI command compiles a DataProduct, executes a declared verification suite on
 local Spark/Iceberg, and emits strict deterministic evidence; both success and controlled failure
 paths are tested.
+
+### Checkpoint 3 — Verification and release hardening
+
+- [x] Validate exact fixture/input bindings, expected ordering fields, and declared negative rules.
+- [x] Emit deterministic row, schema, quality, negative-control, idempotency, and failure verdicts.
+- [x] Prove every v0.1 quality-rule type with real Spark success and negative-control execution.
+- [x] Preserve strict evidence and return nonzero for a controlled wrong-output suite.
+- [x] Install the built wheel in isolation and smoke-test its CLI, schemas, parser, and compiler.
+- [x] Add issue/PR templates plus release and Apache-style readiness checklists.
+- [x] Run every static, package, success-engine, and failure-engine gate; review, commit, and push.
+
+Exit condition: ambiguous suites fail before execution; controlled runtime mismatches produce strict
+diagnostic evidence; all quality evaluators run on Spark; and an isolated wheel passes its smoke
+workflow. No deployment or agent/control-plane capability is introduced.

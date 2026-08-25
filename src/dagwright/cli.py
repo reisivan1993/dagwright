@@ -29,7 +29,12 @@ from dagwright.review import (
     write_review_bundle,
 )
 from dagwright.validation import StaticValidationError, inspect_manifest
-from dagwright.verification import VerificationSuiteParseError, parse_verification_suite_file
+from dagwright.verification import (
+    VerificationSuiteParseError,
+    VerificationSuiteSemanticError,
+    parse_verification_suite_file,
+    validate_verification_suite,
+)
 
 app = typer.Typer(
     name="dagwright",
@@ -162,14 +167,7 @@ def verify_command(
     try:
         suite = parse_verification_suite_file(suite_path)
         compilation, bundle = _prepare(contract, target="spark")
-        transformations = {item.id: item for item in compilation.contract.transformations}
-        if suite.transformation not in transformations:
-            raise ValueError(f"verification transformation does not exist: {suite.transformation}")
-        transformation = transformations[suite.transformation]
-        fixture_views = {item.view for item in suite.fixtures}
-        missing = sorted(set(transformation.inputs) - fixture_views)
-        if missing:
-            raise ValueError(f"verification suite is missing fixture views: {', '.join(missing)}")
+        validate_verification_suite(suite, compilation.contract, suite_path.parent)
         bundle_path = output / "bundle"
         write_review_bundle(bundle, bundle_path)
         spark_submit = shutil.which("spark-submit")
@@ -217,20 +215,23 @@ def verify_command(
             "--warehouse",
             str(warehouse),
         ]
-        subprocess.run(command, check=True)
+        completed = subprocess.run(command, check=False)
         evidence = read_execution_evidence(output / "evidence.json")
     except (
         VerificationSuiteParseError,
+        VerificationSuiteSemanticError,
         ReviewWriteError,
         ValueError,
-        subprocess.CalledProcessError,
     ) as error:
         _fail(error)
-    typer.echo(f"VERIFIED {compilation.contract.metadata.name}")
+    status = "VERIFIED" if evidence.verification_passed else "VERIFICATION FAILED"
+    typer.echo(f"{status} {compilation.contract.metadata.name}")
     typer.echo(f"  suite: {suite.name}")
     typer.echo(f"  evidence: {output / 'evidence.json'}")
     typer.echo(f"  runs: {len(evidence.runs)}")
-    typer.echo("  verification: passed")
+    typer.echo(f"  verification: {'passed' if evidence.verification_passed else 'failed'}")
+    if completed.returncode != 0 or not evidence.verification_passed:
+        raise typer.Exit(code=1)
 
 
 @app.command("explain")

@@ -1,6 +1,6 @@
 apiVersion: dagwright.io/verification-suite/v1alpha1
 kind: VerificationSuite
-name: customer-analytics-reference
+name: customer-analytics-wrong-output
 transformation: build-customer-engagement
 fixtures:
   - view: raw_customers
@@ -8,7 +8,7 @@ fixtures:
   - view: raw_customer_events
     path: fixtures/customer_events.json
 expected:
-  rows: fixtures/expected_customer_engagement.json
+  rows: fixtures/wrong_customer_engagement.json
   schema: fixtures/expected_schema.json
   orderBy: [customer_id]
 negativeControls:

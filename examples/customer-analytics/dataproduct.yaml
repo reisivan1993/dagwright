@@ -65,6 +65,24 @@ contracts:
       asset: customer_engagement
       fields: [customer_id]
       severity: error
+    - id: customer-email-accepted
+      type: accepted_values
+      asset: customer_engagement
+      fields: [email]
+      values: [ada@example.test, grace@example.test, linus@example.test]
+      severity: error
+    - id: customer-id-expression
+      type: expression
+      asset: customer_engagement
+      fields: [customer_id, event_count]
+      expression: customer_id IS NOT NULL AND event_count >= 0
+      severity: error
+    - id: customer-id-in-source
+      type: referential_integrity
+      asset: customer_engagement
+      fields: [customer_id]
+      reference: raw_customers.customer_id
+      severity: error
   anomalies:
     - id: daily-customer-volume
       asset: customer_engagement

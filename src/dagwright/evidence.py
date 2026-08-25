@@ -43,6 +43,14 @@ class RunEvidence(EvidenceModel):
     output_digest: str
 
 
+class NegativeControlEvidence(EvidenceModel):
+    name: str
+    expected_failures: tuple[str, ...]
+    actual_failures: tuple[str, ...]
+    quality: tuple[QualityEvidence, ...]
+    passed: bool
+
+
 class ExecutionEvidence(EvidenceModel):
     api_version: Literal["dagwright.io/execution-evidence/v1alpha1"]
     data_product_id: str
@@ -56,12 +64,25 @@ class ExecutionEvidence(EvidenceModel):
         alias="schema", serialization_alias="schema"
     )
     expected_output_digest: str
+    rows_passed: bool
+    schema_passed: bool
     runs: tuple[RunEvidence, ...]
     quality: tuple[QualityEvidence, ...]
     quality_negative_control: tuple[QualityEvidence, ...]
     quality_negative_control_passed: bool
+    negative_controls: tuple[NegativeControlEvidence, ...]
     idempotency_mode: str
     idempotency_passed: bool
+    failure_reasons: tuple[
+        Literal[
+            "rows_mismatch",
+            "schema_mismatch",
+            "quality_failed",
+            "negative_control_failed",
+            "idempotency_failed",
+        ],
+        ...,
+    ]
     verification_passed: bool
 
 

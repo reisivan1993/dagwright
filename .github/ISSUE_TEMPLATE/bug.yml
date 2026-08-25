@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible DAGwright defect.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not disclose security vulnerabilities here; follow SECURITY.md.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the contract, command, and complete diagnostic output without secrets.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: DAGwright version
+      placeholder: Output of dagwright version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python, uv, operating system, Java, Spark, and Iceberg versions as applicable.
+    validations:
+      required: true

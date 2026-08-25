@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Hardened v0.2 verification with semantic suite validation, exact negative-control expectations,
+  all five quality-rule evaluators, controlled-failure evidence, and isolated wheel verification.
+- Added contribution templates and transparent release/Apache-style readiness checklists.
+
 - Added the first v0.2 checkpoint: real local Spark 3.5/Iceberg execution of the generated customer
   analytics workload with deterministic fixtures, output/schema checks, quality negative controls,
   retry/idempotency proof, and a strict golden execution-evidence manifest.

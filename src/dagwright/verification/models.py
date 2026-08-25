@@ -34,6 +34,7 @@ class Fixture(VerificationModel):
 class NegativeControl(VerificationModel):
     name: Name
     fixtures: list[Fixture] = Field(min_length=1)
+    expected_failures: list[Name] = Field(min_length=1)
 
 
 class ExpectedOutput(VerificationModel):
@@ -66,6 +67,10 @@ class VerificationSuite(VerificationModel):
             _require_unique(
                 f"fixture views in negative control {control.name!r}",
                 [item.view for item in control.fixtures],
+            )
+            _require_unique(
+                f"expected failures in negative control {control.name!r}",
+                control.expected_failures,
             )
         return self
 

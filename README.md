@@ -32,6 +32,8 @@ With Java 17 available, run the first v0.2 execution checkpoint:
 
 ```sh
 make verify-reference
+make verify-reference-failure
+make verify-wheel
 ```
 
 Or run the public suite workflow directly:
@@ -47,6 +49,8 @@ This installs the locked optional PySpark 3.5 runtime, loads the official Iceber
 executes the generated customer-analytics transformation twice, reads the local Iceberg table back,
 checks rows, schema, quality rules and negative controls, proves replace-output idempotency, and
 writes deterministic evidence to `build/reference-execution/evidence.json`. PostgreSQL is not used.
+The failure target proves that an intentional row mismatch exits nonzero while retaining strict
+diagnostic evidence.
 
 The generated contract schema is [schemas/dataproduct-v1alpha1.json](schemas/dataproduct-v1alpha1.json),
 and the validated customer example is
@@ -82,7 +86,8 @@ The generated DAG is a fail-closed orchestration scaffold. DAGwright does not ex
 and its tasks refuse to run until workload implementations are bound explicitly.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [PLAN.md](PLAN.md), the
-[v0.1 guide](docs/v0.1.md), and the
+[v0.1 guide](docs/v0.1.md), the
+[v0.2 checkpoint 3 guide](docs/v0.2-checkpoint-3.md), and the
 [architecture plan](docs/DAGwright_Architecture_and_Implementation_Plan.md).
 
 ## License

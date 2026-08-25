@@ -11,8 +11,8 @@ from datetime import UTC, datetime
 from airflow.sdk import dag as airflow_dag
 from airflow.sdk import task
 
-DAGWRIGHT_IR_DIGEST = "28e2d489938543f50d24d0cba3ae2598e49131a5710017b2bc20a4fd3cfd49d1"
-DAGWRIGHT_CONTRACT_DIGEST = "30cc3263dbce553334448c84e32075608673248189bf9405968a7d95d7a858b3"
+DAGWRIGHT_IR_DIGEST = "bced29a5bd47075f1e4de44034874590e797775584e1d0ad4d03bfe5c4292658"
+DAGWRIGHT_CONTRACT_DIGEST = "fac7eccc9d0e3f54f6265c3e66cdae114b85a7d064069daa02826353f8a62a6b"
 
 
 @airflow_dag(
@@ -65,8 +65,41 @@ def build_dag() -> None:
 
     node_003 = task_003()
 
-    @task(task_id="quality__customer_id_not_null", retries=2)
+    @task(task_id="quality__customer_email_accepted", retries=2)
     def task_004() -> None:
+        """Fail-closed quality scaffold."""
+        raise RuntimeError(
+            "Quality gate "
+            "urn:dagwright:customer-analytics:quality:customer-email-accepted has "
+            "no bound execution implementation"
+        )
+
+    node_004 = task_004()
+
+    @task(task_id="quality__customer_id_expression", retries=2)
+    def task_005() -> None:
+        """Fail-closed quality scaffold."""
+        raise RuntimeError(
+            "Quality gate "
+            "urn:dagwright:customer-analytics:quality:customer-id-expression has "
+            "no bound execution implementation"
+        )
+
+    node_005 = task_005()
+
+    @task(task_id="quality__customer_id_in_source", retries=2)
+    def task_006() -> None:
+        """Fail-closed quality scaffold."""
+        raise RuntimeError(
+            "Quality gate "
+            "urn:dagwright:customer-analytics:quality:customer-id-in-source has "
+            "no bound execution implementation"
+        )
+
+    node_006 = task_006()
+
+    @task(task_id="quality__customer_id_not_null", retries=2)
+    def task_007() -> None:
         """Fail-closed quality scaffold."""
         raise RuntimeError(
             "Quality gate "
@@ -74,10 +107,10 @@ def build_dag() -> None:
             "bound execution implementation"
         )
 
-    node_004 = task_004()
+    node_007 = task_007()
 
     @task(task_id="quality__customer_id_unique", retries=2)
-    def task_005() -> None:
+    def task_008() -> None:
         """Fail-closed quality scaffold."""
         raise RuntimeError(
             "Quality gate "
@@ -85,30 +118,30 @@ def build_dag() -> None:
             "bound execution implementation"
         )
 
-    node_005 = task_005()
+    node_008 = task_008()
 
     @task(task_id="source__crm_db", retries=2)
-    def task_006() -> None:
+    def task_009() -> None:
         """Fail-closed source scaffold."""
         raise RuntimeError(
             "Workload urn:dagwright:customer-analytics:source:crm-db has no bound "
             "execution implementation"
         )
 
-    node_006 = task_006()
+    node_009 = task_009()
 
     @task(task_id="source__events_db", retries=2)
-    def task_007() -> None:
+    def task_010() -> None:
         """Fail-closed source scaffold."""
         raise RuntimeError(
             "Workload urn:dagwright:customer-analytics:source:events-db has no "
             "bound execution implementation"
         )
 
-    node_007 = task_007()
+    node_010 = task_010()
 
     @task(task_id="transformation__build_customer_engagement", retries=2)
-    def task_008() -> None:
+    def task_011() -> None:
         """Fail-closed transformation scaffold."""
         raise RuntimeError(
             "Workload "
@@ -116,17 +149,20 @@ def build_dag() -> None:
             "has no bound execution implementation"
         )
 
-    node_008 = task_008()
+    node_011 = task_011()
 
     # Canonical dependencies from the DAGwright IR.
     node_001 >> node_000
     node_001 >> node_004
     node_001 >> node_005
-    node_002 >> node_008
-    node_003 >> node_008
-    node_006 >> node_003
-    node_007 >> node_002
-    node_008 >> node_001
+    node_001 >> node_006
+    node_001 >> node_007
+    node_001 >> node_008
+    node_002 >> node_011
+    node_003 >> node_011
+    node_009 >> node_003
+    node_010 >> node_002
+    node_011 >> node_001
 
 
 dag = build_dag()

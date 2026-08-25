@@ -121,16 +121,31 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
         ]
         quality = quality_results(output, contract, output_name, frames)
         negative_quality: list[dict[str, Any]] = []
+        negative_controls: list[dict[str, Any]] = []
         input_paths = {item["path"] for item in suite["fixtures"]}
         for control in suite["negativeControls"]:
             frames = _load_fixtures(spark, args.suite.parent, suite["fixtures"])
             control_frames = _load_fixtures(spark, args.suite.parent, control["fixtures"])
             input_paths.update(item["path"] for item in control["fixtures"])
-            negative_quality.extend(
-                quality_results(spark.sql(sql), contract, output_name, {**frames, **control_frames})
+            control_quality = quality_results(
+                spark.sql(sql), contract, output_name, {**frames, **control_frames}
             )
-        negative_control_passed = bool(negative_quality) and all(
-            item["failureCount"] > 0 for item in negative_quality
+            negative_quality.extend(control_quality)
+            actual_failures = sorted(
+                item["ruleId"] for item in control_quality if item["failureCount"] > 0
+            )
+            expected_failures = sorted(control["expectedFailures"])
+            negative_controls.append(
+                {
+                    "actualFailures": actual_failures,
+                    "expectedFailures": expected_failures,
+                    "name": control["name"],
+                    "passed": actual_failures == expected_failures,
+                    "quality": control_quality,
+                }
+            )
+        negative_control_passed = bool(negative_controls) and all(
+            item["passed"] for item in negative_controls
         )
         inputs = [
             {
@@ -140,14 +155,25 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
             for path in sorted(input_paths)
         ]
         expected_digest = digest(expected_rows)
-        idempotency_passed = all(
-            run["rowCount"] == len(expected_rows) and run["outputDigest"] == expected_digest
-            for run in runs
+        rows_passed = actual_rows == expected_rows
+        schema_passed = actual_schema == expected_schema
+        idempotency_passed = len({(run["rowCount"], run["outputDigest"]) for run in runs}) == 1
+        quality_passed = all(item["passed"] for item in quality)
+        failure_reasons = sorted(
+            reason
+            for reason, passed in (
+                ("rows_mismatch", rows_passed),
+                ("schema_mismatch", schema_passed),
+                ("quality_failed", quality_passed),
+                ("negative_control_failed", negative_control_passed),
+                ("idempotency_failed", idempotency_passed),
+            )
+            if not passed
         )
         verification_passed = (
-            actual_rows == expected_rows
-            and actual_schema == expected_schema
-            and all(item["passed"] for item in quality)
+            rows_passed
+            and schema_passed
+            and quality_passed
             and negative_control_passed
             and idempotency_passed
         )
@@ -159,13 +185,17 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
             "expectedOutputDigest": expected_digest,
             "idempotencyMode": contract["execution"]["idempotency"]["mode"],
             "idempotencyPassed": idempotency_passed,
+            "failureReasons": failure_reasons,
             "inputs": inputs,
             "irDigest": ir_digest,
             "quality": quality,
             "qualityNegativeControl": negative_quality,
             "qualityNegativeControlPassed": negative_control_passed,
+            "negativeControls": negative_controls,
+            "rowsPassed": rows_passed,
             "runs": runs,
             "schema": actual_schema,
+            "schemaPassed": schema_passed,
             "table": table,
             "tableFormat": "apache-iceberg",
             "verificationPassed": verification_passed,

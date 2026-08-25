@@ -38,8 +38,8 @@ def test_v01_customer_analytics_end_to_end_golden(
     assert validate_result.stdout.startswith("VALID customer-analytics (1.0.0)\n")
     assert "adapter: airflow3+spark-iceberg (supported, generation-only)" in validate_result.stdout
     assert explain_result.exit_code == 0
-    assert "Graph: 9 nodes, 8 edges" in explain_result.stdout
-    assert "Quality gates: 2 (fail-closed until bound)" in explain_result.stdout
+    assert "Graph: 12 nodes, 11 edges" in explain_result.stdout
+    assert "Quality gates: 5 (fail-closed until bound)" in explain_result.stdout
     assert "Safety: generation-only; no artifact was executed or deployed." in explain_result.stdout
     assert first_compile.exit_code == second_compile.exit_code == 0
     assert "9 artifacts + manifest.json" in first_compile.stdout
@@ -54,7 +54,7 @@ def test_v01_customer_analytics_end_to_end_golden(
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     assert module.dag.dag_id == "dagwright__customer_analytics"
-    assert len(module.dag.task_dict) == 9
+    assert len(module.dag.task_dict) == 12
 
 
 def test_compilation_manifest_digests_every_emitted_artifact(tmp_path: Path) -> None:
@@ -84,7 +84,7 @@ def test_plan_targeted_compile_and_inspect_workflow(tmp_path: Path) -> None:
     inspect = runner.invoke(app, ["inspect", str(output / "manifest.json")])
 
     assert plan.exit_code == 0
-    assert plan.stdout.startswith("PLAN customer-analytics (9 steps)\n")
+    assert plan.stdout.startswith("PLAN customer-analytics (12 steps)\n")
     assert compile_result.exit_code == 0
     assert "target: airflow" in compile_result.stdout
     assert not (output / "spark").exists()

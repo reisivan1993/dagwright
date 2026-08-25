@@ -55,6 +55,15 @@
     "NegativeControl": {
       "additionalProperties": false,
       "properties": {
+        "expectedFailures": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Expectedfailures",
+          "type": "array"
+        },
         "fixtures": {
           "items": {
             "$ref": "#/$defs/Fixture"
@@ -71,7 +80,8 @@
       },
       "required": [
         "name",
-        "fixtures"
+        "fixtures",
+        "expectedFailures"
       ],
       "title": "NegativeControl",
       "type": "object"
