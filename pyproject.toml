@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dagwright"
-version = "0.2.0rc1"
+version = "0.3.0a1"
 description = "Open-source, engine-neutral agentic compiler and control plane for data engineering"
 readme = "README.md"
 requires-python = ">=3.12"

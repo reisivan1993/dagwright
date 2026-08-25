@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DAGwright Viewer</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <div>
+        <p class="eyebrow">DAGWRIGHT / LOCAL VIEWER</p>
+        <h1 id="product-name">Loading…</h1>
+        <p id="product-description" class="subtitle"></p>
+      </div>
+      <div class="status"><span></span> Read-only · generation only</div>
+    </header>
+    <main>
+      <section id="summary" class="summary" aria-label="Compilation summary"></section>
+      <nav aria-label="Viewer sections">
+        <button class="active" data-panel="graph">Graph</button>
+        <button data-panel="plan">Plan</button>
+        <button data-panel="contract">Canonical contract</button>
+        <button data-panel="ir">Canonical IR</button>
+        <button data-panel="artifacts">Artifacts</button>
+        <button data-panel="manifest">Manifest</button>
+      </nav>
+      <section id="graph" class="panel active">
+        <div class="panel-heading"><h2>Dependency graph</h2><p>Engine-neutral nodes and edges.</p></div>
+        <div id="graph-canvas" class="graph"></div>
+      </section>
+      <section id="plan" class="panel"><div class="panel-heading"><h2>Execution plan</h2></div><div id="plan-list"></div></section>
+      <section id="contract" class="panel"><div class="panel-heading"><h2>Canonical contract</h2></div><pre></pre></section>
+      <section id="ir" class="panel"><div class="panel-heading"><h2>Canonical IR</h2></div><pre></pre></section>
+      <section id="artifacts" class="panel"><div class="panel-heading"><h2>Generated artifacts</h2></div><div class="artifact-layout"><aside id="artifact-list"></aside><pre id="artifact-content"></pre></div></section>
+      <section id="manifest" class="panel"><div class="panel-heading"><h2>Compilation manifest</h2></div><pre></pre></section>
+    </main>
+    <footer>Compiled locally. Nothing was executed or deployed.</footer>
+    <script src="/app.js"></script>
+  </body>
+</html>

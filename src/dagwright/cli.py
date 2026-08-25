@@ -36,6 +36,7 @@ from dagwright.verification import (
     parse_verification_suite_file,
     validate_verification_suite,
 )
+from dagwright.viewer import build_viewer_snapshot, serve_viewer
 
 app = typer.Typer(
     name="dagwright",
@@ -262,6 +263,34 @@ def explain_command(
     """Explain the canonical compilation plan without writing files."""
     compilation, bundle = _prepare(contract, overlay_paths=overlay or [])
     typer.echo(_explanation(compilation, bundle))
+
+
+@app.command("ui")
+def ui_command(
+    contract: Annotated[Path, typer.Argument(help="DataProduct JSON or YAML file")],
+    overlay: Annotated[
+        list[Path] | None,
+        typer.Option("--overlay", help="DataProductOverlay file; repeat for multiple overlays"),
+    ] = None,
+    port: Annotated[int, typer.Option(help="Loopback TCP port")] = 8787,
+    open_browser: Annotated[
+        bool,
+        typer.Option("--open/--no-open", help="Open the local Viewer in a browser"),
+    ] = True,
+) -> None:
+    """Open a read-only local browser view of one compiled DataProduct."""
+    try:
+        snapshot = build_viewer_snapshot(contract, overlay or [])
+        serve_viewer(snapshot, port, open_browser=open_browser)
+    except (
+        ContractParseError,
+        CompilerError,
+        OverlayError,
+        UnsupportedSemanticsError,
+        OSError,
+        ValueError,
+    ) as error:
+        _fail(error)
 
 
 def _prepare(
