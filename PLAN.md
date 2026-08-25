@@ -135,3 +135,20 @@ bytes and digests. No environment discovery, secret resolution, persistence, or 
 
 Exit condition: a local `0.2.0rc1` candidate is reproducible, installable, checksummed, and supplied
 with machine-readable dependency inventory. No tag, release, upload, or visibility change occurs.
+
+## v0.3 — Local developer experience
+
+### Checkpoint 1 — Read-only local Viewer
+
+- [x] Add `dagwright ui PRODUCT` without changing compiler semantics.
+- [x] Bind only to IPv4 loopback and precompile an immutable in-memory snapshot.
+- [x] Visualize the canonical graph and deterministic execution plan.
+- [x] Inspect the normalized contract, canonical IR, manifest, digests, and generated artifacts.
+- [x] Package the UI without Node.js, external CDNs, a database, or a frontend build toolchain.
+- [x] Apply restrictive browser security headers and render contract content as text.
+- [x] Add snapshot, overlay, HTTP-route, security-header, CLI, and wheel tests.
+- [ ] Merge through the protected pull-request workflow after independent review.
+
+Exit condition: a contributor can inspect the included DataProduct through a local browser while
+the CLI remains authoritative and compilation remains deterministic, generation-only, and
+database-free. No editing, deployment, authentication, persistence, or remote serving is added.

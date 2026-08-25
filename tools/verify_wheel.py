@@ -33,6 +33,7 @@ def main() -> int:
         run("uv", "pip", "install", "--python", str(python), str(wheel))
         run(str(dagwright), "version")
         run(str(dagwright), "doctor")
+        run(str(dagwright), "ui", "--help")
         contract = root / "examples/customer-analytics/dataproduct.yaml"
         suite = root / "examples/customer-analytics/verification.yaml"
         overlay = root / "examples/customer-analytics/development.overlay.yaml"
@@ -54,12 +55,18 @@ def main() -> int:
 from pathlib import Path
 from dagwright.resources import schema_path
 from dagwright.verification import parse_verification_suite_file
+from dagwright.viewer import build_viewer_snapshot
+from importlib.resources import files
 assert schema_path('dataproduct-v1alpha1.json').is_file()
 assert schema_path('dataproduct-overlay-v1alpha1.json').is_file()
 assert schema_path('verification-suite-v1alpha1.json').is_file()
 assert parse_verification_suite_file(Path(__import__('sys').argv[1])).kind == 'VerificationSuite'
+assert files('dagwright').joinpath('viewer/index.html').is_file()
+assert files('dagwright').joinpath('viewer/app.js').is_file()
+assert files('dagwright').joinpath('viewer/style.css').is_file()
+assert len(build_viewer_snapshot(Path(__import__('sys').argv[2])).payload) > 1000
 """
-        run(str(python), "-c", code, str(suite))
+        run(str(python), "-c", code, str(suite), str(contract))
     return 0
 
 

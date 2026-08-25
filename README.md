@@ -5,6 +5,19 @@ engineering. v0.2 is a Python 3.12 compiler that turns a strict `dagwright.io/v1
 DataProduct contract into canonical IR and deterministic Airflow 3 plus Spark/Iceberg artifacts.
 Local compilation requires no database and does not execute or deploy data products.
 
+## Local Viewer
+
+Open the optional, read-only browser interface for the included example:
+
+```sh
+uv run dagwright ui examples/customer-analytics/dataproduct.yaml
+```
+
+The Viewer binds only to `127.0.0.1`, compiles the contract before starting, and displays the
+dependency graph, execution plan, canonical contract, canonical IR, generated Airflow/Spark files,
+manifest, and digests. Use `--no-open` when running without a desktop browser, or `--port PORT` to
+select another loopback port. It does not execute or deploy the generated pipeline.
+
 ## Development
 
 Requirements: Python 3.12+ and [uv](https://docs.astral.sh/uv/).
@@ -100,7 +113,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [PLAN.md](PLAN.md), the
 [v0.1 guide](docs/v0.1.md), the
 [v0.2 checkpoint 3 guide](docs/v0.2-checkpoint-3.md), the
 [v0.2 checkpoint 4 guide](docs/v0.2-checkpoint-4.md), the
-[v0.2 release-candidate guide](docs/v0.2-release-candidate.md), and the
+[v0.2 release-candidate guide](docs/v0.2-release-candidate.md), the
+[local Viewer guide](docs/v0.3-local-viewer.md), and the
 [architecture plan](docs/DAGwright_Architecture_and_Implementation_Plan.md).
 
 ## License

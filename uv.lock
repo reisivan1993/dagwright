@@ -726,7 +726,7 @@ wheels = [
 
 [[package]]
 name = "dagwright"
-version = "0.2.0rc1"
+version = "0.3.0a1"
 source = { editable = "." }
 dependencies = [
     { name = "croniter" },

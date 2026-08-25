@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added the optional loopback-only DAGwright Viewer for graph, plan, canonical contract, IR,
+  generated-artifact, manifest, and digest inspection without changing compiler behavior.
+
 ## 0.2.0rc1 — 2026-08-25
 
 - Added a reproducible local release-candidate build that byte-compares two clean builds and emits
